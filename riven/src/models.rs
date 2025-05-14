@@ -1041,8 +1041,6 @@ pub mod match_v5 {
         pub assists: i32,
         #[serde(rename = "baronKills")]
         pub baron_kills: i32,
-        #[serde(rename = "bountyLevel")]
-        pub bounty_level: i32,
         #[serde(rename = "champExperience")]
         pub champ_experience: i32,
         #[serde(rename = "champLevel")]
