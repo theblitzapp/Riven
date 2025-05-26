@@ -3898,7 +3898,7 @@ pub mod val_console_match_v1 {
         #[serde(rename = "partyId")]
         pub party_id: String,
         #[serde(rename = "characterId")]
-        pub character_id: String,
+        pub character_id: Option<String>,
         #[serde(rename = "stats")]
         pub stats: crate::models::val_console_match_v1::PlayerStats,
         #[serde(rename = "competitiveTier")]
@@ -4422,7 +4422,7 @@ pub mod val_match_v1 {
         #[serde(rename = "partyId")]
         pub party_id: String,
         #[serde(rename = "characterId")]
-        pub character_id: String,
+        pub character_id: Option<String>,
         #[serde(rename = "stats")]
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub stats: Option<crate::models::val_match_v1::PlayerStats>,
