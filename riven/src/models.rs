@@ -283,9 +283,6 @@ pub mod league_exp_v4 {
     pub struct LeagueEntry {
         #[serde(rename = "leagueId")]
         pub league_id: String,
-        /// Player's summonerId (Encrypted)
-        #[serde(rename = "summonerId")]
-        pub summoner_id: String,
         /// Player's encrypted puuid.
         #[serde(rename = "puuid")]
         pub puuid: String,
@@ -382,9 +379,6 @@ pub mod league_v4 {
         /// Losing team on Summoners Rift.
         #[serde(rename = "losses")]
         pub losses: i32,
-        /// Player's encrypted summonerId.
-        #[serde(rename = "summonerId")]
-        pub summoner_id: String,
         /// Player's encrypted puuid.
         #[serde(rename = "puuid")]
         pub puuid: String,
@@ -411,9 +405,6 @@ pub mod league_v4 {
         #[serde(rename = "leagueId")]
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub league_id: Option<String>,
-        /// Player's encrypted summonerId.
-        #[serde(rename = "summonerId")]
-        pub summoner_id: String,
         /// Player's encrypted puuid.
         #[serde(rename = "puuid")]
         pub puuid: String,
@@ -2494,9 +2485,6 @@ pub mod spectator_tft_v5 {
         /// The team ID of this participant, indicating the participant's team
         #[serde(rename = "teamId")]
         pub team_id: crate::consts::Team,
-        /// The encrypted summoner ID of this participant
-        #[serde(rename = "summonerId")]
-        pub summoner_id: String,
         /// The encrypted puuid of this participant
         #[serde(rename = "puuid")]
         #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2828,10 +2816,6 @@ pub mod spectator_v5 {
         /// The ID of the profile icon used by this participant
         #[serde(rename = "profileIconId")]
         pub profile_icon_id: i64,
-        /// Encrypted summoner ID of this participant
-        #[serde(rename = "summonerId")]
-        #[serde(default, skip_serializing_if = "Option::is_none")]
-        pub summoner_id: Option<String>,
         /// Encrypted puuid of this participant
         #[serde(rename = "puuid")]
         #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2904,9 +2888,6 @@ pub mod tft_league_v1 {
         #[serde(rename = "leagueId")]
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub league_id: Option<String>,
-        /// Player's encrypted summonerId.
-        #[serde(rename = "summonerId")]
-        pub summoner_id: String,
         #[serde(rename = "queueType")]
         pub queue_type: crate::consts::QueueType,
         /// Only included for the RANKED_TFT_TURBO queueType.<br>
@@ -3016,9 +2997,6 @@ pub mod tft_league_v1 {
         /// Second through eighth placement.
         #[serde(rename = "losses")]
         pub losses: i32,
-        /// Player's encrypted summonerId.
-        #[serde(rename = "summonerId")]
-        pub summoner_id: String,
         /// Player's encrypted puuid.
         #[serde(rename = "puuid")]
         pub puuid: String,
