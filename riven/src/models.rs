@@ -2855,9 +2855,6 @@ pub mod summoner_v4 {
         /// Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: profile icon change, playing the tutorial or advanced tutorial, finishing a game, summoner name change.
         #[serde(rename = "revisionDate")]
         pub revision_date: i64,
-        /// Encrypted summoner ID. Max length 63 characters.
-        #[serde(rename = "id")]
-        pub id: String,
         /// Encrypted PUUID. Exact length of 78 characters.
         #[serde(rename = "puuid")]
         pub puuid: String,
@@ -3483,9 +3480,6 @@ pub mod tft_summoner_v1 {
         /// Date summoner was last modified specified as epoch milliseconds. The following events will update this timestamp: profile icon change, playing the tutorial or advanced tutorial, finishing a game, summoner name change.
         #[serde(rename = "revisionDate")]
         pub revision_date: i64,
-        /// Encrypted summoner ID. Max length 63 characters.
-        #[serde(rename = "id")]
-        pub id: String,
         /// Encrypted PUUID. Exact length of 78 characters.
         #[serde(rename = "puuid")]
         pub puuid: String,
