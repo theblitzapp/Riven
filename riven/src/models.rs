@@ -2849,9 +2849,6 @@ pub mod summoner_v4 {
     #[derive(serde::Serialize, crate::de::Deserialize)]
     #[cfg_attr(feature = "deny-unknown-fields", serde(deny_unknown_fields))]
     pub struct Summoner {
-        /// Encrypted account ID. Max length 56 characters.
-        #[serde(rename = "accountId")]
-        pub account_id: String,
         /// ID of the summoner icon associated with the summoner.
         #[serde(rename = "profileIconId")]
         pub profile_icon_id: i32,
@@ -3480,9 +3477,6 @@ pub mod tft_summoner_v1 {
     #[derive(serde::Serialize, crate::de::Deserialize)]
     #[cfg_attr(feature = "deny-unknown-fields", serde(deny_unknown_fields))]
     pub struct Summoner {
-        /// Encrypted account ID. Max length 56 characters.
-        #[serde(rename = "accountId")]
-        pub account_id: String,
         /// ID of the summoner icon associated with the summoner.
         #[serde(rename = "profileIconId")]
         pub profile_icon_id: i32,
