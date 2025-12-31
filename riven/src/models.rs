@@ -1444,6 +1444,9 @@ pub mod match_v5 {
         #[serde(rename = "damageDealtToEpicMonsters")]
         #[serde(default, skip_serializing_if = "Option::is_none")]
         pub damage_dealt_to_epic_monsters: Option<i32>,
+        #[serde(rename = "roleBoundItem")]
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        pub role_bound_item: Option<i32>,
     }
     /// `match-v5.ChallengesDto` data object.
     /// # Description
