@@ -259,6 +259,9 @@ newtype_enum! {
         /// `700`.
         /// Summoner's Rift Clash games on Summoner's Rift
         SUMMONERS_RIFT_CLASH = 700,
+        /// `710`.
+        /// 5v5 Ranked games on Summoner's Rift
+        SUMMONERS_RIFT_5V5_RANKED = 710,
         /// `720`.
         /// ARAM Clash games on Howling Abyss
         HOWLING_ABYSS_ARAM_CLASH = 720,
