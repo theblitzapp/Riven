@@ -88,7 +88,7 @@ impl RateLimit {
     pub async fn acquire_both(app_rate_limit: &Self, method_rate_limit: &Self) {
         while let Some(delay) = Self::acquire_both_or_duration(app_rate_limit, method_rate_limit) {
             futures::select_biased! {
-                _ = sleep(delay).fuse() => continue,
+                _ = sleep(delay + wake_jitter(delay)).fuse() => continue,
                 _ = method_rate_limit.update_notify.notified() => {}
                 _ = app_rate_limit.update_notify.notified() => {}
             };
@@ -299,6 +299,17 @@ impl RateLimit {
             self.update_notify.notify_waiters();
         }
     }
+}
+
+/// Jitter added to waiter sleeps so queued tasks don't all wake at the same
+/// instant and stampede the bucket locks.
+fn wake_jitter(delay: Duration) -> Duration {
+    use std::sync::atomic::{AtomicU32, Ordering};
+    static SEQ: AtomicU32 = AtomicU32::new(0);
+    let n = SEQ.fetch_add(1, Ordering::Relaxed);
+    // Weyl sequence, avoids a rand dependency.
+    let f = (n.wrapping_mul(2654435769) >> 8) as f32 / (1 << 24) as f32;
+    cmp::min(delay / 2, Duration::from_secs(2)).mul_f32(f)
 }
 
 fn buckets_require_updating(limit_header: &str, buckets: &[impl TokenBucket]) -> bool {
