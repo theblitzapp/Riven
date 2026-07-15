@@ -9,7 +9,7 @@
 
 newtype_enum! {
     /// A League of Legends map.
-    pub newtype_enum Map(u8) {
+    pub newtype_enum Map(u16) {
         /// `1`.
         /// Summoner's Rift
         /// Original Summer variant

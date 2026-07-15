@@ -189,7 +189,7 @@ newtype_enum! {
     /// `ZILEAN` | "Zilean" | "Zilean" | 26
     /// `ZOE` | "Zoe" | "Zoe" | 142
     /// `ZYRA` | "Zyra" | "Zyra" | 143
-    pub newtype_enum Champion(i16) {
+    pub newtype_enum Champion(i32) {
         /// `-1`, none. Appears when a champion ban is not used in champ select.
         NONE = -1,
 

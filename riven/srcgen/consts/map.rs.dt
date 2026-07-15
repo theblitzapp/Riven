@@ -5,7 +5,7 @@
 
 newtype_enum! {
     /// A League of Legends map.
-    pub newtype_enum Map(u8) {
+    pub newtype_enum Map(u16) {
 {{
     for (const e of maps) {
         const desc = e['x-desc'] ? e['x-desc'].split('\n') : [];
