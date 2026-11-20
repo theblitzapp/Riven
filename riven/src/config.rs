@@ -9,6 +9,7 @@ use crate::time::Duration;
 pub struct RiotApiConfig {
     pub(crate) base_url: String,
     pub(crate) retries: u8,
+    pub(crate) rate_limiting: bool,
     pub(crate) app_rate_usage_factor: f32,
     pub(crate) method_rate_usage_factor: f32,
     pub(crate) burst_factor: f32,
@@ -67,6 +68,9 @@ impl RiotApiConfig {
     /// `api_key` should be a Riot Games API key from
     /// [https://developer.riotgames.com/](https://developer.riotgames.com/),
     /// and should look like `"RGAPI-01234567-89ab-cdef-0123-456789abcdef"`.
+    ///
+    /// # Panics
+    /// If `api_key` is not a valid HTTP header value.
     pub fn with_key(api_key: impl AsRef<[u8]>) -> Self {
         let mut default_headers = HeaderMap::new();
         default_headers.insert(
@@ -77,6 +81,7 @@ impl RiotApiConfig {
         Self {
             base_url: Self::DEFAULT_BASE_URL.into(),
             retries: Self::DEFAULT_RETRIES,
+            rate_limiting: true,
             app_rate_usage_factor: Self::DEFAULT_RATE_USAGE_FACTOR,
             method_rate_usage_factor: Self::DEFAULT_RATE_USAGE_FACTOR,
             burst_factor: Self::PRECONFIG_BURST_BURST_FACTOR,
@@ -88,8 +93,9 @@ impl RiotApiConfig {
 
     /// Creates a new `RiotApiConfig` with the given client builder.
     ///
-    /// The client builder default headers should include a value for
-    /// [`RiotApiConfig::RIOT_KEY_HEADER`] (`"X-Riot-Token"`), otherwise authentication will fail.
+    /// The client builder's default headers must include
+    /// [`RiotApiConfig::RIOT_KEY_HEADER`] with the API key as its value. Without
+    /// it, authentication fails.
     ///
     /// * `retries = 3` (`RiotApiConfig::DEFAULT_RETRIES`).
     /// * `burst_factor = 0.99` (`preconfig_burst`).
@@ -98,6 +104,7 @@ impl RiotApiConfig {
         Self {
             base_url: Self::DEFAULT_BASE_URL.to_owned(),
             retries: Self::DEFAULT_RETRIES,
+            rate_limiting: true,
             app_rate_usage_factor: Self::DEFAULT_RATE_USAGE_FACTOR,
             method_rate_usage_factor: Self::DEFAULT_RATE_USAGE_FACTOR,
             burst_factor: Self::PRECONFIG_BURST_BURST_FACTOR,
@@ -155,6 +162,22 @@ impl RiotApiConfig {
     /// `self`, for chaining.
     pub fn set_retries(mut self, retries: u8) -> Self {
         self.retries = retries;
+        self
+    }
+
+    /// Turns Riven's own rate limiting on (the default) or off.
+    ///
+    /// With rate limiting off, every request is sent as soon as it is made. A 429
+    /// retried under [`Self::set_retries`] is still resent only after its
+    /// `retry-after` delay.
+    ///
+    /// Turn it off only when something outside Riven already limits the rate of
+    /// requests made through this instance.
+    ///
+    /// # Returns
+    /// `self`, for chaining.
+    pub fn set_rate_limiting(mut self, rate_limiting: bool) -> Self {
+        self.rate_limiting = rate_limiting;
         self
     }
 

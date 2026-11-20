@@ -14,9 +14,6 @@ use crate::{ResponseInfo, Result, RiotApiConfig, RiotApiError, TryRequestError, 
 /// # Usage
 ///
 /// Construct an instance using [`RiotApi::new(api_key or config)`](RiotApi::new).
-/// The parameter may be a Riot API key string or a [`RiotApiConfig`]. Riot API
-/// keys are obtained from the [Riot Developer Portal](https://developer.riotgames.com/)
-/// and look like `"RGAPI-01234567-89ab-cdef-0123-456789abcdef"`.
 ///
 /// An instance provides access to "endpoint handles" which in turn provide
 /// access to individual API method calls. For example, to get a user by Riot
@@ -29,16 +26,12 @@ use crate::{ResponseInfo, Result, RiotApiConfig, RiotApiError, TryRequestError, 
 ///
 /// # Rate Limiting
 ///
-/// The Riot Game API enforces _dynamic_ rate limiting, meaning that rate limits are
-/// specified in response headers and can change at any time.
-/// Riven keeps track of changing rate limits seamlessly, preventing you from
-/// getting blacklisted.
-///
-/// Riven's rate limiting is highly efficient; it can use the full throughput
-/// of your rate limit without triggering 429 errors.
+/// Riot sends its rate limits in response headers and can change them at any
+/// time. An instance follows them and holds requests back to stay under them.
 ///
 /// To adjust rate limiting, see [RiotApiConfig] and use
-/// [`RiotApi::new(config)`](RiotApi::new) to construct an instance.
+/// [`RiotApi::new(config)`](RiotApi::new) to construct an instance. Rate
+/// limiting can be turned off with [`RiotApiConfig::set_rate_limiting`].
 pub struct RiotApi {
     /// Configuration settings.
     config: RiotApiConfig,

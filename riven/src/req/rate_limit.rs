@@ -196,58 +196,14 @@ impl RateLimit {
             }
         }
 
-        // Get retry after header. Only care if it exists.
-        let retry_after_header = response
-            .headers()
-            .get(reqwest::header::RETRY_AFTER)
-            .and_then(|h| {
-                h.to_str()
-                    .map_err(|e| {
-                        log::error!(
-                            "Failed to read retry-after header as visible ASCII string: {:?}.",
-                            e
-                        )
-                    })
-                    .ok()
-            });
-
-        // Header currently only returns ints, but float is more general. Can be zero.
-        let delay_secs = retry_after_header
-            .and_then(|s| {
-                s.parse::<f32>()
-                    .map_err(|e| {
-                        log::error!(
-                            "Failed to parse {} header as f32: {:?}.",
-                            reqwest::header::RETRY_AFTER,
-                            e,
-                        )
-                    })
-                    .ok()
-                    .map(|mut n| {
-                        n += 0.5;
-                        log::info!(
-                            "429 response, rate limit {:?}, {} header: `{}`, delaying {:?} secs.",
-                            self.rate_limit_type,
-                            reqwest::header::RETRY_AFTER,
-                            s,
-                            n,
-                        );
-                        n
-                    })
-            })
-            .unwrap_or_else(|| {
-                let n = 2.0;
-                log::info!(
-                    "429 response, rate limit {:?}, {} header MISSING, defaulting to {} secs.",
-                    self.rate_limit_type,
-                    reqwest::header::RETRY_AFTER,
-                    n,
-                );
-                n
-            });
-
-        // Add 0.5 seconds to account for rounding, cases when response is zero.
-        let delay = Duration::from_secs_f32(delay_secs);
+        let delay = retry_after_delay(response);
+        log::info!(
+            "429 response, rate limit {:?}, {} header: {:?}, delaying {:?}.",
+            self.rate_limit_type,
+            reqwest::header::RETRY_AFTER,
+            response.headers().get(reqwest::header::RETRY_AFTER),
+            delay,
+        );
 
         // Set `self.retry_after`.
         *self.retry_after.write() = Some(Instant::now() + delay);
@@ -299,6 +255,42 @@ impl RateLimit {
             self.update_notify.notify_waiters();
         }
     }
+}
+
+/// Returns how long to wait before retrying a 429. The delay is the
+/// `retry-after` header plus 0.5 seconds, or 2 seconds if the header is missing
+/// or unreadable.
+pub fn retry_after_delay(response: &Response) -> Duration {
+    retry_after_header_secs(response)
+        // The 0.5 seconds allow for rounding and for a header of zero.
+        .map(|secs| Duration::from_secs_f32(secs + 0.5))
+        .unwrap_or(Duration::from_secs(2))
+}
+
+fn retry_after_header_secs(response: &Response) -> Option<f32> {
+    let retry_after_header = response
+        .headers()
+        .get(reqwest::header::RETRY_AFTER)?
+        .to_str()
+        .map_err(|e| {
+            log::error!(
+                "Failed to read retry-after header as visible ASCII string: {:?}.",
+                e
+            )
+        })
+        .ok()?;
+
+    // Header currently only returns ints, but float is more general. Can be zero.
+    retry_after_header
+        .parse::<f32>()
+        .map_err(|e| {
+            log::error!(
+                "Failed to parse {} header as f32: {:?}.",
+                reqwest::header::RETRY_AFTER,
+                e,
+            )
+        })
+        .ok()
 }
 
 /// Jitter added to waiter sleeps so queued tasks don't all wake at the same
